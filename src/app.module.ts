@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MarketModule } from './modules/market/market.module';
 import { StoreModule } from './modules/store/store.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
     StoreModule,
     MarketModule,
+    DatabaseModule,
   ],
   controllers: [],
   providers: [],

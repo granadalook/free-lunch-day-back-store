@@ -10,7 +10,15 @@ async function bootstrap() {
       subscribe: {
         fromBeginning: true,
       },
-      consumer: { groupId: 'kafka-test' },
+      consumer: {
+        groupId: 'kafka-test-store',
+        sessionTimeout: 15000,
+        heartbeatInterval: 3000,
+        retry: {
+          retries: 5,
+          initialRetryTime: 300,
+        },
+      },
       client: {
         ssl: true,
         rejectUnauthorized: false,

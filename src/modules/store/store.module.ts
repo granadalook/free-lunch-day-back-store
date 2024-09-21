@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { StoreService } from './service/store.service';
 import { StoreController } from './controller/store.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-
+import { DatabaseService } from '../database/service/database.service';
+import { MarketService } from '../market/service/market.service';
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
+    HttpModule,
     ClientsModule.register([
       {
         name: 'KAFKA_CLIENT',
@@ -36,6 +39,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [StoreController],
-  providers: [StoreService],
+  providers: [StoreService, DatabaseService, MarketService],
 })
 export class StoreModule {}

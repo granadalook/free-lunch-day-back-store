@@ -1,0 +1,5 @@
+export enum StatusOrderEnum {
+  CREATE_ORDER = 'CREATE ORDER',
+  IN_PROGREST = 'IN PROGREST',
+  DELIVERED = 'DELIVERED',
+}
