@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RecipeDto } from 'src/modules/store/dto/order.dto';
+import { RecipeDto, VisitsMarket } from 'src/modules/store/dto/order.dto';
 
 @Injectable()
 export class DatabaseService {
@@ -36,7 +36,7 @@ export class DatabaseService {
     }
     return this.ingredients;
   }
-  getVisitMarket(): Array<{ product: string; amount: number }> {
+  getVisitMarket(): Array<VisitsMarket> {
     return this.market;
   }
   addVisitMarket(product: string, amount: number): void {

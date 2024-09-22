@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,6 +40,13 @@ async function bootstrap() {
       },
     },
   } as MicroserviceOptions);
+  const config = new DocumentBuilder()
+    .setTitle('API STORE AND MARKET')
+    .setDescription('The store and market API description')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, document);
   app.startAllMicroservices();
   await app.listen(4000);
 }
