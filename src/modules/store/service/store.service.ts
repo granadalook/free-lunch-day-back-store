@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { DatabaseService } from 'src/modules/database/service/database.service';
-import { MarketService } from 'src/modules/market/service/market.service';
+import { DatabaseService } from '../../database/service/database.service';
+import { MarketService } from '../../market/service/market.service';
 import { OrderDto, RecipeDto } from '../dto/order.dto';
 import { KafkaTopicsConstants } from '../../constants/kafka.topics';
 import { StatusOrderEnum } from '../../constants/status.order.enum';
@@ -15,12 +15,13 @@ export class StoreService {
   ) {}
 
   async createOrder(order: OrderDto): Promise<void> {
-    const availableIngredients = this.databaseService.getListIngredients();
+    const availableIngredients =
+      await this.databaseService.getListIngredients();
     const updateStatus = {
       id: order.id,
       status: StatusOrderEnum.IN_PROGREST,
     };
-    this.kafkaService.emit(
+    await this.kafkaService.emit(
       KafkaTopicsConstants.UPDATE_STATUS_TOPIC,
       updateStatus,
     );
@@ -29,7 +30,7 @@ export class StoreService {
       order.recipe,
       availableIngredients,
     );
-    this.databaseService.updateListIngredients(newAvailableIngredients);
+    await this.databaseService.updateListIngredients(newAvailableIngredients);
   }
 
   async useIngredients(
@@ -37,17 +38,15 @@ export class StoreService {
     requiredIngredients: RecipeDto,
     availableIngredients: RecipeDto,
   ): Promise<RecipeDto> {
-    availableIngredients = await this.buyMissingIngredients(
-      requiredIngredients,
-      availableIngredients,
-    );
+    availableIngredients =
+      await this.buyMissingIngredients(requiredIngredients);
 
-    this.deductIngredients(requiredIngredients, availableIngredients);
+    await this.deductIngredients(requiredIngredients, availableIngredients);
     const updateStatus = {
       id: idOrder,
       status: StatusOrderEnum.DELIVERED,
     };
-    this.kafkaService.emit(
+    await this.kafkaService.emit(
       KafkaTopicsConstants.UPDATE_STATUS_TOPIC,
       updateStatus,
     );
@@ -56,21 +55,25 @@ export class StoreService {
 
   private async buyMissingIngredients(
     requiredIngredients: RecipeDto,
-    availableIngredients: RecipeDto,
   ): Promise<RecipeDto> {
+    let availableIngredients = await this.databaseService.getListIngredients();
+
     for (const [ingredient, requiredAmount] of Object.entries(
       requiredIngredients,
     )) {
-      if (requiredAmount !== undefined) {
-        if (
-          !availableIngredients[ingredient] ||
-          availableIngredients[ingredient] < requiredAmount
-        ) {
-          const buy = await this.marketService.buyMarket(ingredient);
-          availableIngredients = this.databaseService.updateIngredients(buy);
-        }
+      if (
+        !availableIngredients[ingredient] ||
+        availableIngredients[ingredient] < requiredAmount
+      ) {
+        const buy = await this.marketService.buyMarket(
+          ingredient,
+          requiredAmount,
+        );
+        availableIngredients =
+          await this.databaseService.updateIngredients(buy);
       }
     }
+
     return availableIngredients;
   }
 

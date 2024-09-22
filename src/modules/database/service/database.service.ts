@@ -3,6 +3,7 @@ import { RecipeDto } from 'src/modules/store/dto/order.dto';
 
 @Injectable()
 export class DatabaseService {
+  market: { product: string; amount: number; date: Date }[] = [];
   private ingredients: RecipeDto = {
     tomato: 5,
     lemon: 5,
@@ -34,5 +35,12 @@ export class DatabaseService {
       }
     }
     return this.ingredients;
+  }
+  getVisitMarket(): Array<{ product: string; amount: number }> {
+    return this.market;
+  }
+  addVisitMarket(product: string, amount: number): void {
+    const date = new Date();
+    this.market.push({ product, amount, date });
   }
 }

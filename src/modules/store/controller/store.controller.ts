@@ -1,16 +1,29 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Logger, Get } from '@nestjs/common';
 import { StoreService } from '../service/store.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { OrderDto } from '../dto/order.dto';
+import { OrderDto, RecipeDto } from '../dto/order.dto';
 import { KafkaTopicsConstants } from '../../constants/kafka.topics';
+import { DatabaseService } from '../../database/service/database.service';
 
 @Controller('store')
 export class StoreController {
-  constructor(private storeService: StoreService) {}
+  constructor(
+    private storeService: StoreService,
+    private databaseService: DatabaseService,
+  ) {}
 
   @MessagePattern(KafkaTopicsConstants.CREATE_ORDER_TOPIC)
   kitchenMessage(@Payload() payload: OrderDto) {
     Logger.log(payload.recipe, StoreController.name);
     this.storeService.createOrder(payload);
+  }
+  @Get('availableIngredients')
+  getIngredients(): RecipeDto {
+    return this.databaseService.getListIngredients();
+  }
+
+  @Get('visitsMarket')
+  getVisits() {
+    return this.databaseService.getVisitMarket();
   }
 }
