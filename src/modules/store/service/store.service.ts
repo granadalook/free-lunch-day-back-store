@@ -53,7 +53,7 @@ export class StoreService {
     return availableIngredients;
   }
 
-  private async buyMissingIngredients(
+  async buyMissingIngredients(
     requiredIngredients: RecipeDto,
   ): Promise<RecipeDto> {
     let availableIngredients = await this.databaseService.getListIngredients();
@@ -77,7 +77,7 @@ export class StoreService {
     return availableIngredients;
   }
 
-  private deductIngredients(
+  deductIngredients(
     requiredIngredients: RecipeDto,
     availableIngredients: RecipeDto,
   ) {

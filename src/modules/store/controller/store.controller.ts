@@ -23,7 +23,7 @@ export class StoreController {
   }
 
   @Get('visitsMarket')
-  getVisits() {
+  getVisits(): Array<{ product: string; amount: number }> {
     return this.databaseService.getVisitMarket();
   }
 }
