@@ -15,9 +15,9 @@ export class StoreController {
   ) {}
 
   @MessagePattern(KafkaTopicsConstants.CREATE_ORDER_TOPIC)
-  kitchenMessage(@Payload() payload: OrderDto) {
+  async kitchenMessage(@Payload() payload: OrderDto) {
     Logger.log(payload.recipe, StoreController.name);
-    this.storeService.createOrder(payload);
+    await this.storeService.createOrder(payload);
   }
 
   @Get('availableIngredients')
