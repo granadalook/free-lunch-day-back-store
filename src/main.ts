@@ -13,11 +13,13 @@ async function bootstrap() {
       },
       consumer: {
         groupId: 'kafka-test-store',
-        sessionTimeout: 15000,
-        heartbeatInterval: 3000,
+        sessionTimeout: 30000,
+        heartbeatInterval: 10000,
+        maxPollInterval: 300000,
         retry: {
           retries: 5,
-          initialRetryTime: 300,
+          initialRetryTime: 1000,
+          maxRetryTime: 30000,
         },
       },
       client: {
@@ -35,7 +37,7 @@ async function bootstrap() {
           initialRetryTime: 1000,
           maxRetryTime: 30000,
         },
-        connectionTimeout: 3000,
+        connectionTimeout: 5000,
         authenticationTimeout: 10000,
       },
     },
