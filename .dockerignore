@@ -1,0 +1,22 @@
+# Ignora node_modules ya que se instalan en el contenedor
+node_modules
+
+# Ignora la carpeta de compilación
+dist
+
+# Ignora archivos de configuración locales
+.env
+
+# Ignora archivos de pruebas
+*.test.ts
+*.spec.ts
+coverage
+
+# Ignora logs
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Ignora carpetas de control de versiones
+.git
+.gitignore
